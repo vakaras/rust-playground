@@ -58,53 +58,8 @@ body {
 
     padding-bottom: 1em;
 
-    &-split {
-        display: flex;
-        height: 100vh;
-
-        &-automatic {
-            @media screen and (max-width: 1600px) {
-                flex-direction: column;
-            }
-
-            @media screen and (min-width: 1600px) {
-                flex-direction: row;
-            }
-        }
-
-        &-horizontal {
-            flex-direction: column;
-        }
-
-        &-vertical {
-            flex-direction: row;
-        }
-
-        &-vertical > *:first-child {
-            @include split-first-child();
-        }
-
-        // automatic vertical
-        &-automatic > *:first-child {
-            @media screen and (min-width: 1600px) {
-                @include split-first-child();
-            }
-        }
-
-        &-vertical > * {
-            @include split-all-children();
-        }
-
-        // automatic vertical
-        &-automatic > * {
-            @media screen and (min-width: 1600px) {
-                @include split-all-children();
-            }
-        }
-    }
-
     &-editor {
-        flex: 1 1 auto;
+        flex: 0 0 auto;
         position: relative;
 
         border: 4px solid $border-color;
@@ -517,4 +472,71 @@ $PHI: 2.61803398875;
         visibility: visible;
         opacity: 1;
     }
+}
+
+.horizontal-split {
+  display: flex;
+  flex-direction: column;
+  flex: 1; // move up and out
+
+  &__handle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    height: 1em;
+    width: 100%;
+
+    cursor: row-resize;
+  }
+}
+
+.vertical-split {
+  display: flex;
+  flex-direction: row;
+  flex: 1; // move up and out
+
+  &__handle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    height: 100%;
+    width: 1em;
+
+    cursor: col-resize;
+  }
+}
+
+.xxx {
+  display: flex;
+  flex: 1 1 auto;
+
+  &__horizontal {
+    flex: 1 1 auto;
+    display: inherit;
+  }
+
+  &__vertical {
+    flex: 1 1 auto;
+    display: none;
+  }
+
+  @media screen and (min-width: 1600px) {
+    &--automatic &__horizontal {
+      display: none;
+    }
+
+    &--automatic &__vertical {
+      display: inherit;
+    }
+  }
+
+  &--vertical &__horizontal {
+    display: none;
+  }
+
+  &--vertical &__vertical {
+    display: inherit;
+  }
 }

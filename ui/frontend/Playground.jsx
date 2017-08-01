@@ -6,6 +6,7 @@ import Configuration from './Configuration';
 import Header from './Header';
 import Editor from './Editor';
 import Output from './Output';
+import { VerticalSplitter, HorizontalSplitter } from './Splitter';
 
 function ConfigurationModal() {
   return (
@@ -33,12 +34,26 @@ class Playground extends React.Component {
           <div className="playground-header">
             <Header />
           </div>
-          <div className={`${splitClass} ${orientation}`}>
-            <div className="playground-editor">
-              <Editor />
+          <div className={`xxx xxx--${splitOrientation}`}>
+            <div className="xxx__horizontal">
+              <HorizontalSplitter>
+                <div className="playground-editor">
+                  <Editor />
+                </div>
+                <div className={`playground-output ${outputFocused}`}>
+                  <Output />
+                </div>
+              </HorizontalSplitter>
             </div>
-            <div className={`playground-output ${outputFocused}`}>
-              <Output />
+            <div className="xxx__vertical">
+              <VerticalSplitter>
+                <div className="playground-editor">
+                  <Editor />
+                </div>
+                <div className={`playground-output ${outputFocused}`}>
+                  <Output />
+                </div>
+              </VerticalSplitter>
             </div>
           </div>
         </div>
