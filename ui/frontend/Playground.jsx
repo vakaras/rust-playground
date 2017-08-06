@@ -18,44 +18,42 @@ function ConfigurationModal() {
   );
 }
 
+const Wow = ({ splitOrientation, showOutput, children }) => (
+  <div className={`xxx xxx--${splitOrientation}`}>
+    <div className="xxx__horizontal">
+      <HorizontalSplitter onlyFirst={!showOutput}>
+        { children[0] }
+        { children[1] }
+      </HorizontalSplitter>
+    </div>
+    <div className="xxx__vertical">
+      <VerticalSplitter onlyFirst={!showOutput}>
+        { children[0] }
+        { children[1] }
+      </VerticalSplitter>
+    </div>
+  </div>
+);
+
 class Playground extends React.Component {
   render() {
     const { showConfig, focus, splitOrientation } = this.props;
 
-    const config = showConfig ? <ConfigurationModal /> : null;
-    const outputFocused = focus ? 'playground-output-focused' : '';
-    const splitClass = 'playground-split';
-    const orientation = splitClass + '-' + splitOrientation;
-
     return (
       <div>
-        { config }
+        { showConfig && <ConfigurationModal /> }
         <div className="playground">
           <div className="playground-header">
             <Header />
           </div>
-          <div className={`xxx xxx--${splitOrientation}`}>
-            <div className="xxx__horizontal">
-              <HorizontalSplitter>
-                <div className="playground-editor">
-                  <Editor />
-                </div>
-                <div className={`playground-output ${outputFocused}`}>
-                  <Output />
-                </div>
-              </HorizontalSplitter>
+          <Wow splitOrientation={splitOrientation} showOutput={focus}>
+            <div className="playground-editor">
+              <Editor />
             </div>
-            <div className="xxx__vertical">
-              <VerticalSplitter>
-                <div className="playground-editor">
-                  <Editor />
-                </div>
-                <div className={`playground-output ${outputFocused}`}>
-                  <Output />
-                </div>
-              </VerticalSplitter>
+            <div className="playground-output">
+              <Output />
             </div>
-          </div>
+          </Wow>
         </div>
       </div>
     );
@@ -82,7 +80,10 @@ Playground.propTypes = {
   splitOrientation: PropTypes.string.isRequired,
 };
 
-const mapStateToProps = ({ configuration: { shown: showConfig, orientation: splitOrientation }, output: { meta: { focus } } }) => (
+const mapStateToProps = ({
+  configuration: { shown: showConfig, orientation: splitOrientation },
+  output: { meta: { focus } },
+}) => (
   { showConfig, focus, splitOrientation }
 );
 

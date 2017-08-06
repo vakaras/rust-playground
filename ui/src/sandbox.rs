@@ -266,7 +266,10 @@ impl Sandbox {
 
         cmd
             .arg("--volume").arg(&mount_input_file)
-            .arg("--volume").arg(&mount_output_dir);
+            .arg("--volume").arg(&mount_output_dir)
+            ;
+            //.args(&["--env", "CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUNNER=env RUST_BACKTRACE=1"]);
+            //.args(&["--env", "RUST_BACKTRACE=1"]);
 
         cmd
     }

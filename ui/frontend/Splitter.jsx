@@ -16,6 +16,7 @@ export class HorizontalSplitter extends React.Component {
   render() {
     return (
       <SplitterCore className="horizontal-split"
+                    onlyFirst={this.props.onlyFirst}
                     onChange={this.onPercentageChange}
                     percentage={this.state.percentage}
                     handle={HorizontalHandle}>
@@ -46,6 +47,7 @@ export class VerticalSplitter extends React.Component {
   render() {
     return (
       <SplitterCore className="vertical-split"
+                    onlyFirst={this.props.onlyFirst}
                     onChange={this.onPercentageChange}
                     percentage={this.state.percentage}
                     handle={VerticalHandle}>
@@ -72,24 +74,39 @@ class SplitterCore extends React.Component {
   }
 
   render() {
-    const { className, handle: Handle, percentage, children } = this.props;
+    const { className, handle: Handle, onlyFirst, children } = this.props;
     const [first, second] = children;
+
+    const percentage = onlyFirst ? 1 : this.props.percentage;
 
     return (
       <div className={className} ref={c => this._container = c}>
         { React.cloneElement(first, {style: { flexBasis: `${percentage * 100}%` }}) }
-        { Handle &&
+        { !onlyFirst && Handle &&
             <div draggable ref={h => this._handle = h}>
               <Handle />
             </div>
         }
-        { second }
+        { !onlyFirst && second }
       </div>
     );
   }
 
   componentDidMount() {
+    this.watchHandleEvents();
+  }
+
+  componentDidUpdate() {
+    this.watchHandleEvents();
+  }
+
+  watchHandleEvents() {
+    if (this._handle === this._handleKnown) { return; }
+    this._handleKnown = this._handle;
+
     if (!this._handle) { return; }
+
+    console.log("running setup");
 
     this._handle.ondragstart = e => {
       // Do not use the default ghosted drag handle, just let the boxes resize
