@@ -21,13 +21,13 @@ function ConfigurationModal() {
 const Wow = ({ splitOrientation, showOutput, children }) => (
   <div className={`xxx xxx--${splitOrientation}`}>
     <div className="xxx__horizontal">
-      <HorizontalSplitter onlyFirst={!showOutput}>
+      <HorizontalSplitter disabled={!showOutput}>
         { children[0] }
         { children[1] }
       </HorizontalSplitter>
     </div>
     <div className="xxx__vertical">
-      <VerticalSplitter onlyFirst={!showOutput}>
+      <VerticalSplitter disabled={!showOutput}>
         { children[0] }
         { children[1] }
       </VerticalSplitter>
@@ -46,7 +46,7 @@ class Playground extends React.Component {
           <div className="playground-header">
             <Header />
           </div>
-          <Wow splitOrientation={splitOrientation} showOutput={focus}>
+          <Wow splitOrientation={splitOrientation} showOutput={false}>
             <div className="playground-editor">
               <Editor />
             </div>

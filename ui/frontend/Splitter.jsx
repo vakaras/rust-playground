@@ -2,7 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 const { Image } = window;
 
-const HorizontalHandle = () => <span className="horizontal-split__handle">===</span>;
+const HorizontalHandle = ({ disabled }) => (
+  <span>{disabled ? '' : '==='}</span>
+);
 
 export class HorizontalSplitter extends React.Component {
   constructor(props) {
@@ -16,7 +18,7 @@ export class HorizontalSplitter extends React.Component {
   render() {
     return (
       <SplitterCore className="horizontal-split"
-                    onlyFirst={this.props.onlyFirst}
+                    disabled={this.props.disabled}
                     onChange={this.onPercentageChange}
                     percentage={this.state.percentage}
                     handle={HorizontalHandle}>
@@ -33,7 +35,9 @@ export class HorizontalSplitter extends React.Component {
   }
 }
 
-const VerticalHandle = () => <span className="vertical-split__handle">|</span>;
+const VerticalHandle = ({ disabled }) => (
+  <span className={`vertical-split__handle ${ disabled && 'vertical-split__handle--disabled'}`}>|</span>
+);
 
 export class VerticalSplitter extends React.Component {
   constructor(props) {
@@ -47,7 +51,7 @@ export class VerticalSplitter extends React.Component {
   render() {
     return (
       <SplitterCore className="vertical-split"
-                    onlyFirst={this.props.onlyFirst}
+                    disabled={this.props.disabled}
                     onChange={this.onPercentageChange}
                     percentage={this.state.percentage}
                     handle={VerticalHandle}>
@@ -74,20 +78,23 @@ class SplitterCore extends React.Component {
   }
 
   render() {
-    const { className, handle: Handle, onlyFirst, children } = this.props;
+    const { percentage, disabled, className, mode, handle: Handle, children } = this.props;
     const [first, second] = children;
 
-    const percentage = onlyFirst ? 1 : this.props.percentage;
+    const x = disabled ? {} : { style: { flexBasis: `${percentage * 100}%` } };
 
     return (
       <div className={className} ref={c => this._container = c}>
-        { React.cloneElement(first, {style: { flexBasis: `${percentage * 100}%` }}) }
-        { !onlyFirst && Handle &&
-            <div draggable ref={h => this._handle = h}>
-              <Handle />
-            </div>
-        }
-        { !onlyFirst && second }
+        <div className={`${className}__one`} {...x}>
+          { first }
+        </div>
+        <div className={`${className}__handle ${disabled ? `${className}__handle--disabled` : ''}`}
+             draggable={!disabled} ref={h => this._handle = h}>
+          <Handle disabled={disabled}/>
+        </div>
+        <div className={`${className}__two`}>
+          { second }
+        </div>
       </div>
     );
   }
