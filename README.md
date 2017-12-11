@@ -159,7 +159,7 @@ cd ui
 docker run -it --rm -v $PWD:/ui --workdir /ui --entrypoint /bin/bash rust-nightly
 rustup target add x86_64-unknown-linux-musl
 cargo build --target=x86_64-unknown-linux-musl --release
-# exit docker
+exit
 cd ..
 ```
 
@@ -179,6 +179,79 @@ cd ui
 sudo \
   TMPDIR=/mnt/playground \
   RUST_LOG=info \
+  PLAYGROUND_UI_ADDRESS=0.0.0.0 \
+  PLAYGROUND_UI_PORT=80 \
+  PLAYGROUND_UI_ROOT=$PWD/frontend/build \
+  ./target/x86_64-unknown-linux-musl/release/ui
+```
+
+### Vagrant
+
+Install [Vagrant](https://www.vagrantup.com/downloads.html).
+
+Install `vagrant-disksize` plugin:
+```
+vagrant plugin install vagrant-disksize
+```
+
+Clone the project and start a new VM:
+```
+git clone https://github.com/vakaras/rust-playground.git
+cd rust-playground
+git checkout prusti_play
+vagrant up
+```
+
+Reboot the VM:
+```
+vagrant ssh
+sudo reboot
+```
+
+Clone the playground and build containers:
+```
+git clone https://github.com/vakaras/rust-playground.git
+cd rust-playground
+cd compiler/
+./build.sh
+cd ../
+```
+
+Build the UI backend:
+```
+cd ui
+docker run -it --rm -v $PWD:/ui --workdir /ui --entrypoint /bin/bash rust-nightly
+rustup target add x86_64-unknown-linux-musl
+cargo build --target=x86_64-unknown-linux-musl --release
+exit
+cd ..
+```
+
+Build the UI frontend:
+```
+cd ui/frontend
+docker run -it --rm -v $PWD:/ui --workdir /ui --entrypoint /bin/bash node
+yarn
+NODE_ENV=production yarn run build
+exit
+cd ../..
+```
+
+Build the Prusti container:
+```
+cd ..
+git clone https://github.com/viperproject/prusti.git
+cd prusti
+make build_image_as_rust_nightly
+cd ../rust-playground
+```
+
+Run the server:
+```
+cd ui
+sudo \
+  TMPDIR=/mnt/playground \
+  RUST_LOG=debug \
   PLAYGROUND_UI_ADDRESS=0.0.0.0 \
   PLAYGROUND_UI_PORT=80 \
   PLAYGROUND_UI_ROOT=$PWD/frontend/build \
